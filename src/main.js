@@ -2,6 +2,7 @@ import { Sus } from './game/Sus.js';
 import { Alien } from './game/Alien.js';
 import { Boomerang } from './game/Boomerang.js';
 import { InputHandler } from './game/Input.js';
+import { Powerup } from './game/Powerup.js';
 
 window.addEventListener('load', function () {
   const canvas = document.getElementById('gameCanvas');
@@ -15,6 +16,7 @@ window.addEventListener('load', function () {
 
   let aliens = [];
   let boomerangs = [];
+  let powerups = [];
   let alienTimer = 0;
   let alienInterval = 100; // Spawn rate
 
@@ -39,6 +41,7 @@ window.addEventListener('load', function () {
     sus.y = sus.initialY;
     aliens = [];
     boomerangs = [];
+    powerups = [];
     score = 0;
     earthHealth = 100;
     gameOver = false;
@@ -114,14 +117,47 @@ window.addEventListener('load', function () {
     });
     boomerangs = boomerangs.filter(b => !b.markedForDeletion);
 
-    // Manage Aliens
+    // Manage Aliens & Powerups
     if (alienTimer > alienInterval) {
-      aliens.push(new Alien(canvas.width, canvas.height));
+      const rand = Math.random() * 100;
+      if (rand < 3) {
+        // 3% Black Powerup (Safe Nuke)
+        powerups.push(new Powerup(canvas.width, canvas.height, 'black'));
+      } else if (rand < 18) { // 3 + 15
+        // 15% Red Powerup (+Health)
+        powerups.push(new Powerup(canvas.width, canvas.height, 'red'));
+      } else {
+        aliens.push(new Alien(canvas.width, canvas.height));
+      }
+
       alienTimer = 0;
       if (alienInterval > 20) alienInterval -= 0.1; // Increase difficulty
     } else {
       alienTimer++;
     }
+
+    // Update Powerups
+    [...powerups].forEach(p => {
+      p.update();
+      p.draw(ctx);
+
+      // Collision with Sus
+      if (checkCollision(sus.getHitbox(), p)) {
+        p.markedForDeletion = true;
+        if (p.type === 'red') {
+          earthHealth = Math.min(100, earthHealth + 10);
+          uiHealth.innerText = 'Earth Health: ' + earthHealth + '%';
+          uiHealth.style.color = earthHealth > 50 ? '#4caf50' : (earthHealth > 20 ? 'orange' : 'red');
+        } else if (p.type === 'black') {
+          // Safe Nuke
+          aliens = [];
+          explosionTimer = 30;
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+    });
+    powerups = powerups.filter(p => !p.markedForDeletion);
 
     [...aliens].forEach(alien => {
       alien.update();

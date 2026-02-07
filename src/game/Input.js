@@ -44,6 +44,52 @@ export class InputHandler {
         this.keys.Control = false;
       }
     });
+
+    // Touch Controls
+    this.touchStartX = 0;
+    this.lastTapTime = 0;
+
+    window.addEventListener('touchstart', (e) => {
+      // Prevent default to stop scrolling/zooming
+      // e.preventDefault(); // Might block browser UI, be careful. 
+
+      const touch = e.changedTouches[0];
+      const x = touch.clientX;
+      const width = window.innerWidth;
+
+      // Movement Zones
+      if (x < width / 2) {
+        this.keys.ArrowLeft = true;
+        this.keys.ArrowRight = false;
+      } else {
+        this.keys.ArrowRight = true;
+        this.keys.ArrowLeft = false;
+      }
+
+      // Tap Logic
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - this.lastTapTime;
+
+      if (tapLength < 300 && tapLength > 0) {
+        // Double Tap -> Boomerang (Control)
+        this.keys.Control = true;
+        setTimeout(() => this.keys.Control = false, 200);
+        this.keys.Space = false; // Cancel single tap kick if double tap
+      } else {
+        // Single Tap -> Kick (Space)
+        // We set it true, but maybe we should wait to see if it's a double tap?
+        // For responsiveness, let's fire Kick immediately. Double tap will just be Kick + Boomerang.
+        this.keys.Space = true;
+        setTimeout(() => this.keys.Space = false, 200);
+      }
+      this.lastTapTime = currentTime;
+    }, { passive: false });
+
+    window.addEventListener('touchend', (e) => {
+      // frequent stops
+      this.keys.ArrowLeft = false;
+      this.keys.ArrowRight = false;
+    });
   }
 
   isDown(key) {
