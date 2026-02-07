@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tijl vs Aliens</title>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    <div id="ui-layer">
+      <div id="score">Score: 0</div>
+      <div id="health">Earth Health: 100%</div>
+      <div id="timer">Time: 0s</div>
+      <div id="game-over" class="hidden">
+        <h1>GAME OVER</h1>
+        <p>Earth has fallen!</p>
+        <button id="restart-btn">Restart</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
