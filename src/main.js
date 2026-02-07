@@ -120,11 +120,11 @@ window.addEventListener('load', function () {
     // Manage Aliens & Powerups
     if (alienTimer > alienInterval) {
       const rand = Math.random() * 100;
-      if (rand < 3) {
-        // 3% Black Powerup (Safe Nuke)
+      if (rand < 1) {
+        // 1% Black Powerup (Nuke + Damage)
         powerups.push(new Powerup(canvas.width, canvas.height, 'black'));
-      } else if (rand < 18) { // 3 + 15
-        // 15% Red Powerup (+Health)
+      } else if (rand < 6) { // 1 + 5
+        // 5% Red Powerup (+Health)
         powerups.push(new Powerup(canvas.width, canvas.height, 'red'));
       } else {
         aliens.push(new Alien(canvas.width, canvas.height));
@@ -149,8 +149,18 @@ window.addEventListener('load', function () {
           uiHealth.innerText = 'Earth Health: ' + earthHealth + '%';
           uiHealth.style.color = earthHealth > 50 ? '#4caf50' : (earthHealth > 20 ? 'orange' : 'red');
         } else if (p.type === 'black') {
-          // Safe Nuke
+          // Nuke with 20 Damage
           aliens = [];
+          earthHealth -= 20;
+          uiHealth.innerText = 'Earth Health: ' + earthHealth + '%';
+          if (earthHealth < 50) uiHealth.style.color = 'orange';
+          if (earthHealth < 20) uiHealth.style.color = 'red';
+
+          if (earthHealth <= 0) {
+            gameOver = true;
+            uiGameOver.classList.remove('hidden');
+          }
+
           explosionTimer = 30;
           ctx.fillStyle = 'white';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
