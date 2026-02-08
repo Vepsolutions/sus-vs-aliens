@@ -145,7 +145,7 @@ window.addEventListener('load', function () {
       if (checkCollision(sus.getHitbox(), p)) {
         p.markedForDeletion = true;
         if (p.type === 'red') {
-          earthHealth = Math.min(100, earthHealth + 10);
+          earthHealth = Math.min(100, earthHealth + 5);
           uiHealth.innerText = 'Earth Health: ' + earthHealth + '%';
           uiHealth.style.color = earthHealth > 50 ? '#4caf50' : (earthHealth > 20 ? 'orange' : 'red');
         } else if (p.type === 'black') {
