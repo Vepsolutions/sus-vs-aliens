@@ -120,11 +120,11 @@ window.addEventListener('load', function () {
     // Manage Aliens & Powerups
     if (alienTimer > alienInterval) {
       const rand = Math.random() * 100;
-      if (rand < 1) {
-        // 1% Black Powerup (Nuke + Damage)
+      if (rand < 0.5) {
+        // 0.5% Black Powerup (Nuke + Damage)
         powerups.push(new Powerup(canvas.width, canvas.height, 'black'));
-      } else if (rand < 6) { // 1 + 5
-        // 5% Red Powerup (+Health)
+      } else if (rand < 3) { // 0.5 + 2.5
+        // 2.5% Red Powerup (+Health)
         powerups.push(new Powerup(canvas.width, canvas.height, 'red'));
       } else {
         aliens.push(new Alien(canvas.width, canvas.height));
@@ -145,7 +145,7 @@ window.addEventListener('load', function () {
       if (checkCollision(sus.getHitbox(), p)) {
         p.markedForDeletion = true;
         if (p.type === 'red') {
-          earthHealth = Math.min(100, earthHealth + 5);
+          earthHealth = Math.min(100, earthHealth + 10);
           uiHealth.innerText = 'Earth Health: ' + earthHealth + '%';
           uiHealth.style.color = earthHealth > 50 ? '#4caf50' : (earthHealth > 20 ? 'orange' : 'red');
         } else if (p.type === 'black') {
